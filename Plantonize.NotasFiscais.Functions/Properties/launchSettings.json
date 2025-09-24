@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Plantonize.NotasFiscais.Functions": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7186",
+      "launchBrowser": false
+    }
+  }
+}

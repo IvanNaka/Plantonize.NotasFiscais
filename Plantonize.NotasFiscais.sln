@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36511.14 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantonize.NotasFiscais.API", "Plantonize.NotasFiscais.API\Plantonize.NotasFiscais.API.csproj", "{BE313B3D-1DDE-4B67-9097-34DB5500A359}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantonize.NotasFiscais.Domain", "Plantonize.NotasFiscais.Domain\Plantonize.NotasFiscais.Domain.csproj", "{BE4AF56A-3E0B-4D78-A5D2-FF86644CD7F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantonize.NotasFiscais.Application", "Plantonize.NotasFiscais.Application\Plantonize.NotasFiscais.Application.csproj", "{4FB7F63A-649C-4B74-B5FB-530D19B116E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantonize.NotasFiscais.Infrastructure", "Plantonize.NotasFiscais.Infrastructure\Plantonize.NotasFiscais.Infrastructure.csproj", "{0D18E6B9-91B5-4C59-9A5D-C462A0ECC85B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantonize.NotasFiscais.Functions", "Plantonize.NotasFiscais.Functions\Plantonize.NotasFiscais.Functions.csproj", "{68C74306-582E-4EAD-8D82-2F49BFA34FA5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BE313B3D-1DDE-4B67-9097-34DB5500A359}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE313B3D-1DDE-4B67-9097-34DB5500A359}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE313B3D-1DDE-4B67-9097-34DB5500A359}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE313B3D-1DDE-4B67-9097-34DB5500A359}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE4AF56A-3E0B-4D78-A5D2-FF86644CD7F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE4AF56A-3E0B-4D78-A5D2-FF86644CD7F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE4AF56A-3E0B-4D78-A5D2-FF86644CD7F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE4AF56A-3E0B-4D78-A5D2-FF86644CD7F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FB7F63A-649C-4B74-B5FB-530D19B116E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FB7F63A-649C-4B74-B5FB-530D19B116E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FB7F63A-649C-4B74-B5FB-530D19B116E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FB7F63A-649C-4B74-B5FB-530D19B116E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D18E6B9-91B5-4C59-9A5D-C462A0ECC85B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D18E6B9-91B5-4C59-9A5D-C462A0ECC85B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D18E6B9-91B5-4C59-9A5D-C462A0ECC85B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D18E6B9-91B5-4C59-9A5D-C462A0ECC85B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68C74306-582E-4EAD-8D82-2F49BFA34FA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68C74306-582E-4EAD-8D82-2F49BFA34FA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68C74306-582E-4EAD-8D82-2F49BFA34FA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68C74306-582E-4EAD-8D82-2F49BFA34FA5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0E8C1118-2625-433F-A92E-801E8137D200}
+	EndGlobalSection
+EndGlobal
