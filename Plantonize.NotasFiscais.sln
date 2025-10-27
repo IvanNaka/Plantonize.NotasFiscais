@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36511.14 d17.14
+VisualStudioVersion = 17.14.36511.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantonize.NotasFiscais.API", "Plantonize.NotasFiscais.API\Plantonize.NotasFiscais.API.csproj", "{BE313B3D-1DDE-4B67-9097-34DB5500A359}"
 EndProject
@@ -10,8 +10,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantonize.NotasFiscais.Application", "Plantonize.NotasFiscais.Application\Plantonize.NotasFiscais.Application.csproj", "{4FB7F63A-649C-4B74-B5FB-530D19B116E1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantonize.NotasFiscais.Infrastructure", "Plantonize.NotasFiscais.Infrastructure\Plantonize.NotasFiscais.Infrastructure.csproj", "{0D18E6B9-91B5-4C59-9A5D-C462A0ECC85B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plantonize.NotasFiscais.Functions", "Plantonize.NotasFiscais.Functions\Plantonize.NotasFiscais.Functions.csproj", "{68C74306-582E-4EAD-8D82-2F49BFA34FA5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +33,6 @@ Global
 		{0D18E6B9-91B5-4C59-9A5D-C462A0ECC85B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D18E6B9-91B5-4C59-9A5D-C462A0ECC85B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D18E6B9-91B5-4C59-9A5D-C462A0ECC85B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{68C74306-582E-4EAD-8D82-2F49BFA34FA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{68C74306-582E-4EAD-8D82-2F49BFA34FA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{68C74306-582E-4EAD-8D82-2F49BFA34FA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{68C74306-582E-4EAD-8D82-2F49BFA34FA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

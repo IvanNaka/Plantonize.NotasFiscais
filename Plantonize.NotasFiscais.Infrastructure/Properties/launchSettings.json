@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Plantonize.NotasFiscais.Infrastructure": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
