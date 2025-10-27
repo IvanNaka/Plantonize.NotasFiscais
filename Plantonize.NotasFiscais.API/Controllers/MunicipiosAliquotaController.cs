@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Plantonize.NotasFiscais.Domain.Entities;
 using Plantonize.NotasFiscais.Domain.Interfaces;
@@ -8,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace Plantonize.NotasFiscais.API.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     [Produces("application/json")]
