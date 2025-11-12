@@ -1,4 +1,3 @@
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -20,6 +19,13 @@ namespace Plantonize.NotasFiscais.Infrastructure.Extensions
             // Register MongoDBSettings as singleton for direct injection
             services.AddSingleton(sp =>
                 sp.GetRequiredService<IOptions<MongoDBSettings>>().Value);
+
+            // Register Service Bus Settings using Options pattern
+            services.Configure<ServiceBusSettings>(
+                configuration.GetSection("ServiceBusSettings"));
+
+            // Register Service Bus Service
+            services.AddSingleton<IServiceBusService, ServiceBusService>();
 
             // Register DbContext
             services.AddSingleton<NotasFiscaisDBContext>();
