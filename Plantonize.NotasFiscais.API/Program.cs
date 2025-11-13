@@ -1,6 +1,7 @@
 using Plantonize.NotasFiscais.Application.Extensions;
 using Plantonize.NotasFiscais.Infrastructure.Extensions;
 using Plantonize.NotasFiscais.Infrastructure.Services;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,13 @@ builder.Services.AddInfrastructure(builder.Configuration);
 // Add Application Services
 builder.Services.AddApplicationServices();
 
+// ? Add MediatR for Vertical Slice Architecture
+builder.Services.AddMediatR(cfg => 
+    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+
+// ? Add FluentValidation
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
@@ -38,6 +46,22 @@ builder.Services.AddSwaggerGen(options =>
             Email = "support@plantonize.com"
         }
     });
+
+    // ? Add V2 API documentation for Vertical Slices
+    options.SwaggerDoc("v2", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Plantonize NotasFiscais API - V2 (Vertical Slice)",
+        Version = "v2",
+        Description = "API using Vertical Slice Architecture with MediatR and CQRS patterns",
+        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+        {
+            Name = "Plantonize",
+            Email = "support@plantonize.com"
+        }
+    });
+
+    // Enable Swagger annotations
+    options.EnableAnnotations();
 
     // Enable XML comments
     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -69,9 +93,15 @@ using (var scope = app.Services.CreateScope())
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Plantonize NotasFiscais API v1");
+    // V1 - Clean Architecture
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Plantonize NotasFiscais API v1 (Clean Architecture)");
+    
+    // ? V2 - Vertical Slice Architecture
+    options.SwaggerEndpoint("/swagger/v2/swagger.json", "Plantonize NotasFiscais API v2 (Vertical Slice)");
+    
     options.RoutePrefix = "swagger";
     options.DocumentTitle = "Plantonize NotasFiscais API Documentation";
+    options.DefaultModelsExpandDepth(-1); // Hide schemas section
 });
 
 if (!app.Environment.IsDevelopment())
@@ -98,6 +128,11 @@ app.MapGet("/", () => Results.Ok(new
 { 
     message = "Plantonize NotasFiscais API", 
     version = "2.0.0",
+    architectures = new 
+    {
+        v1 = "Clean Architecture (Layered)",
+        v2 = "Vertical Slice Architecture (CQRS)"
+    },
     documentation = "/swagger"
 }))
 .WithName("Root");
