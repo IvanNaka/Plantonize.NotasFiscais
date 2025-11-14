@@ -5,59 +5,66 @@
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
 
-API para gerenciamento de Notas Fiscais, Faturas e C·lculos de Impostos do sistema Plantonize.
+API para gerenciamento de Notas Fiscais, Faturas e C√°lculos de Impostos do sistema Plantonize.
 
-## ?? Õndice
+Este projeto foi desenvolvido pelos seguintes alunos:
+
+- **ANA PAULA MAGNABOSCO MILIT√ÉO**
+- **BRUNO DOS SANTOS**
+- **GABRIELA VIEIRA RAMOS**
+- **IVAN YUDI ODA NAKATANI**
+- **SALION DE CONTO**
+## ?? √çndice
 
 - [Sobre o Projeto](#sobre-o-projeto)
 - [Arquitetura](#arquitetura)
   - [Clean Architecture (Camadas)](#clean-architecture-camadas)
   - [Vertical Slice Architecture](#vertical-slice-architecture)
-  - [ComparaÁ„o entre Arquiteturas](#comparaÁ„o-entre-arquiteturas)
+  - [Compara√ß√£o entre Arquiteturas](#compara√ß√£o-entre-arquiteturas)
 - [Estrutura do Projeto](#estrutura-do-projeto)
 - [Tecnologias](#tecnologias)
 - [Requisitos](#requisitos)
-- [InstalaÁ„o](#instalaÁ„o)
-- [ConfiguraÁ„o](#configuraÁ„o)
-- [ExecuÁ„o](#execuÁ„o)
+- [Instala√ß√£o](#instala√ß√£o)
+- [Configura√ß√£o](#configura√ß√£o)
+- [Execu√ß√£o](#execu√ß√£o)
 - [Testes](#testes)
 - [Endpoints da API](#endpoints-da-api)
-- [Padrıes e Boas Pr·ticas](#padrıes-e-boas-pr·ticas)
+- [Padr√µes e Boas Pr√°ticas](#padr√µes-e-boas-pr√°ticas)
 - [Equipe de Desenvolvimento](#equipe-de-desenvolvimento)
-- [ContribuiÁ„o](#contribuiÁ„o)
+- [Contribui√ß√£o](#contribui√ß√£o)
 
 ---
 
 ## ?? Sobre o Projeto
 
-O **Plantonize NotasFiscais API** È uma aplicaÁ„o .NET 8 desenvolvida para gerenciar o ciclo completo de notas fiscais, faturas e c·lculos tribut·rios. A aplicaÁ„o utiliza MongoDB como banco de dados e Azure Service Bus para mensageria assÌncrona.
+O **Plantonize NotasFiscais API** √© uma aplica√ß√£o .NET 8 desenvolvida para gerenciar o ciclo completo de notas fiscais, faturas e c√°lculos tribut√°rios. A aplica√ß√£o utiliza MongoDB como banco de dados e Azure Service Bus para mensageria ass√≠ncrona.
 
-Este projeto foi desenvolvido como parte de um trabalho acadÍmico, implementando **duas arquiteturas distintas**: Clean Architecture (tradicional em camadas) e Vertical Slice Architecture (baseada em features), demonstrando as vantagens e casos de uso de cada abordagem.
+Este projeto foi desenvolvido como parte de um trabalho acad√™mico, implementando **duas arquiteturas distintas**: Clean Architecture (tradicional em camadas) e Vertical Slice Architecture (baseada em features), demonstrando as vantagens e casos de uso de cada abordagem.
 
 ### Principais Funcionalidades
 
-- ? **Gest„o de Notas Fiscais (NFSE)**
-- ? **Gest„o de Faturas**
-- ? **C·lculo autom·tico de Impostos (ISS, INSS, IR, CSLL, PIS, COFINS)**
-- ? **Gest„o de AlÌquotas por MunicÌpio**
-- ? **IntegraÁ„o com Azure Service Bus**
-- ? **DocumentaÁ„o autom·tica com Swagger**
+- ? **Gest√£o de Notas Fiscais (NFSE)**
+- ? **Gest√£o de Faturas**
+- ? **C√°lculo autom√°tico de Impostos (ISS, INSS, IR, CSLL, PIS, COFINS)**
+- ? **Gest√£o de Al√≠quotas por Munic√≠pio**
+- ? **Integra√ß√£o com Azure Service Bus**
+- ? **Documenta√ß√£o autom√°tica com Swagger**
 - ? **Health Checks**
-- ? **Testes Unit·rios completos**
+- ? **Testes Unit√°rios completos**
 - ? **Testes de Arquitetura automatizados**
 
 ---
 
 ## ??? Arquitetura
 
-Este projeto implementa **duas arquiteturas** em paralelo, permitindo comparaÁ„o pr·tica:
+Este projeto implementa **duas arquiteturas** em paralelo, permitindo compara√ß√£o pr√°tica:
 
 1. **Clean Architecture (V1)** - Arquitetura em camadas tradicional
 2. **Vertical Slice Architecture (V2)** - Arquitetura baseada em features com CQRS
 
 ### Clean Architecture (Camadas)
 
-A Clean Architecture organiza o cÛdigo em camadas concÍntricas, onde as camadas internas n„o conhecem as camadas externas.
+A Clean Architecture organiza o c√≥digo em camadas conc√™ntricas, onde as camadas internas n√£o conhecem as camadas externas.
 
 ```
 ???????????????????????????????????????????????
@@ -94,17 +101,17 @@ A Clean Architecture organiza o cÛdigo em camadas concÍntricas, onde as camadas 
 
 #### Camadas e Responsabilidades
 
-##### 1?? **Domain (N˙cleo de NegÛcio)**
-- ?? **Responsabilidade**: ContÈm a lÛgica de negÛcio pura e as entidades do domÌnio
-- ?? **Conte˙do**:
-  - `Entities/`: Classes que representam os conceitos de negÛcio (NotaFiscal, Fatura, etc.)
-  - `Interfaces/`: Contratos (interfaces) para serviÁos e repositÛrios
-  - `Enum/`: Enumeradores de negÛcio
-- ?? **Regra de Ouro**: N√O pode depender de nenhuma outra camada
+##### 1?? **Domain (N√∫cleo de Neg√≥cio)**
+- ?? **Responsabilidade**: Cont√©m a l√≥gica de neg√≥cio pura e as entidades do dom√≠nio
+- ?? **Conte√∫do**:
+  - `Entities/`: Classes que representam os conceitos de neg√≥cio (NotaFiscal, Fatura, etc.)
+  - `Interfaces/`: Contratos (interfaces) para servi√ßos e reposit√≥rios
+  - `Enum/`: Enumeradores de neg√≥cio
+- ?? **Regra de Ouro**: N√ÉO pode depender de nenhuma outra camada
 - ? **Vantagens**: 
-  - PersistÍncia agnÛstica
-  - F·cil de testar
-  - Regras de negÛcio centralizadas
+  - Persist√™ncia agn√≥stica
+  - F√°cil de testar
+  - Regras de neg√≥cio centralizadas
 
 **Exemplo de Entidade:**
 ```csharp
@@ -122,18 +129,18 @@ public class NotaFiscal
 ```
 
 ##### 2?? **Application (Casos de Uso)**
-- ?? **Responsabilidade**: Orquestra a lÛgica de negÛcio e coordena as operaÁıes
-- ?? **Conte˙do**:
-  - `Services/`: ImplementaÁ„o da lÛgica de aplicaÁ„o
-  - `DTOs/`: Objetos de transferÍncia de dados
-  - `Extensions/`: ConfiguraÁ„o de injeÁ„o de dependÍncia
-- ?? **DependÍncias**: Pode depender apenas do **Domain**
+- ?? **Responsabilidade**: Orquestra a l√≥gica de neg√≥cio e coordena as opera√ß√µes
+- ?? **Conte√∫do**:
+  - `Services/`: Implementa√ß√£o da l√≥gica de aplica√ß√£o
+  - `DTOs/`: Objetos de transfer√™ncia de dados
+  - `Extensions/`: Configura√ß√£o de inje√ß√£o de depend√™ncia
+- ?? **Depend√™ncias**: Pode depender apenas do **Domain**
 - ? **Vantagens**:
   - Centraliza os casos de uso
   - Independente da infraestrutura
-  - F·cil de testar
+  - F√°cil de testar
 
-**Exemplo de ServiÁo:**
+**Exemplo de Servi√ßo:**
 ```csharp
 namespace Plantonize.NotasFiscais.Application.Services;
 
@@ -154,19 +161,19 @@ public class NotaFiscalService : INotaFiscalService
 ```
 
 ##### 3?? **Infrastructure (Infraestrutura)**
-- ?? **Responsabilidade**: Implementa detalhes tÈcnicos e acesso a recursos externos
-- ?? **Conte˙do**:
-  - `Repositories/`: ImplementaÁ„o de acesso a dados (MongoDB)
-  - `Configuration/`: ConfiguraÁıes de entidades
-  - `Services/`: ServiÁos externos (Service Bus, etc.)
-  - `Extensions/`: ConfiguraÁ„o de DI
+- ?? **Responsabilidade**: Implementa detalhes t√©cnicos e acesso a recursos externos
+- ?? **Conte√∫do**:
+  - `Repositories/`: Implementa√ß√£o de acesso a dados (MongoDB)
+  - `Configuration/`: Configura√ß√µes de entidades
+  - `Services/`: Servi√ßos externos (Service Bus, etc.)
+  - `Extensions/`: Configura√ß√£o de DI
   - `Mappings/`: AutoMapper profiles
-- ?? **DependÍncias**: Depende do **Domain**
+- ?? **Depend√™ncias**: Depende do **Domain**
 - ? **Vantagens**:
-  - Isola detalhes tÈcnicos
+  - Isola detalhes t√©cnicos
   - Facilita troca de tecnologias (ex: trocar MongoDB por SQL Server)
 
-**Exemplo de RepositÛrio:**
+**Exemplo de Reposit√≥rio:**
 ```csharp
 namespace Plantonize.NotasFiscais.Infrastructure.Repositories;
 
@@ -187,16 +194,16 @@ public class NotaFiscalRepository : INotaFiscalRepository
 }
 ```
 
-##### 4?? **API (ApresentaÁ„o)**
-- ?? **Responsabilidade**: Expıe endpoints HTTP e gerencia requisiÁıes
-- ?? **Conte˙do**:
+##### 4?? **API (Apresenta√ß√£o)**
+- ?? **Responsabilidade**: Exp√µe endpoints HTTP e gerencia requisi√ß√µes
+- ?? **Conte√∫do**:
   - `Controllers/`: Endpoints da API
-  - `Program.cs`: ConfiguraÁ„o da aplicaÁ„o
-  - `appsettings.json`: ConfiguraÁıes
-- ?? **DependÍncias**: Depende de **Application** e **Infrastructure**
+  - `Program.cs`: Configura√ß√£o da aplica√ß√£o
+  - `appsettings.json`: Configura√ß√µes
+- ?? **Depend√™ncias**: Depende de **Application** e **Infrastructure**
 - ? **Vantagens**:
-  - F·cil de substituir (ex: trocar por gRPC)
-  - Testes de integraÁ„o isolados
+  - F√°cil de substituir (ex: trocar por gRPC)
+  - Testes de integra√ß√£o isolados
 
 **Exemplo de Controller:**
 ```csharp
@@ -222,27 +229,27 @@ public class NotasFiscaisController : ControllerBase
 
 ---
 
-### ?? Regras de DependÍncia
+### ?? Regras de Depend√™ncia
 
 ```
 API ? Application ? Domain ? Infrastructure
 ```
 
-**Regras RÌgidas:**
-- ? Domain N√O depende de ninguÈm
+**Regras R√≠gidas:**
+- ? Domain N√ÉO depende de ningu√©m
 - ? Application depende APENAS de Domain
 - ? Infrastructure depende APENAS de Domain
 - ? API depende de Application e Infrastructure (apenas para DI)
 
-**Essas regras s„o validadas automaticamente pelos testes de arquitetura!**
+**Essas regras s√£o validadas automaticamente pelos testes de arquitetura!**
 
 ---
 
 ### Vertical Slice Architecture
 
-A **Vertical Slice Architecture** È uma abordagem alternativa que organiza o cÛdigo por funcionalidade (features) ao invÈs de camadas tÈcnicas.
+A **Vertical Slice Architecture** √© uma abordagem alternativa que organiza o c√≥digo por funcionalidade (features) ao inv√©s de camadas t√©cnicas.
 
-> ?? **ImplementaÁ„o**: Este projeto implementa Vertical Slices usando **MediatR** e **CQRS pattern**, disponÌvel nos endpoints V2 da API.
+> ?? **Implementa√ß√£o**: Este projeto implementa Vertical Slices usando **MediatR** e **CQRS pattern**, dispon√≠vel nos endpoints V2 da API.
 
 #### ? Estrutura Implementada
 
@@ -273,7 +280,7 @@ Features/
         ??? DeleteNotaFiscalEndpoint.cs
 ```
 
-#### ImplementaÁ„o com MediatR
+#### Implementa√ß√£o com MediatR
 
 **Command:**
 ```csharp
@@ -323,7 +330,7 @@ public class CreateNotaFiscalValidator : AbstractValidator<CreateNotaFiscalComma
         
         RuleFor(x => x.DataEmissao)
             .LessThanOrEqualTo(DateTime.Now)
-            .WithMessage("Data de emiss„o n„o pode ser futura");
+            .WithMessage("Data de emiss√£o n√£o pode ser futura");
     }
 }
 ```
@@ -347,22 +354,22 @@ public class CreateNotaFiscalEndpoint : ControllerBase
 
 ---
 
-### ?? ComparaÁ„o entre Arquiteturas
+### ?? Compara√ß√£o entre Arquiteturas
 
 | Aspecto | Clean Architecture (V1) | Vertical Slice (V2) |
 |---------|------------------------|---------------------|
-| **OrganizaÁ„o** | Por camadas tÈcnicas | Por funcionalidades (features) |
+| **Organiza√ß√£o** | Por camadas t√©cnicas | Por funcionalidades (features) |
 | **Endpoints** | `/api/NotasFiscais` | `/api/v2/notas-fiscais` |
-| **Padr„o** | Layered Architecture | CQRS + MediatR |
-| **Complexidade** | MÈdia-Alta | Baixa-MÈdia |
-| **ReutilizaÁ„o** | Alta (serviÁos compartilhados) | Baixa (cÛdigo duplicado intencional) |
-| **Autonomia** | Baixa (mudanÁas afetam camadas) | Alta (mudanÁas isoladas) |
-| **Curva de Aprendizado** | Õngreme | Suave |
-| **ValidaÁ„o** | Manual no Controller/Service | Autom·tica com FluentValidation |
+| **Padr√£o** | Layered Architecture | CQRS + MediatR |
+| **Complexidade** | M√©dia-Alta | Baixa-M√©dia |
+| **Reutiliza√ß√£o** | Alta (servi√ßos compartilhados) | Baixa (c√≥digo duplicado intencional) |
+| **Autonomia** | Baixa (mudan√ßas afetam camadas) | Alta (mudan√ßas isoladas) |
+| **Curva de Aprendizado** | √çngreme | Suave |
+| **Valida√ß√£o** | Manual no Controller/Service | Autom√°tica com FluentValidation |
 | **Testabilidade** | Excelente | Excelente |
 | **Melhor para** | Sistemas grandes e complexos | Features isoladas, CRUD, MVPs |
 
-**Ambas as abordagens est„o implementadas e funcionais neste projeto!**
+**Ambas as abordagens est√£o implementadas e funcionais neste projeto!**
 
 ---
 
@@ -371,7 +378,7 @@ public class CreateNotaFiscalEndpoint : ControllerBase
 ```
 Plantonize.NotasFiscais/
 ?
-??? Plantonize.NotasFiscais.API/              # Camada de ApresentaÁ„o
+??? Plantonize.NotasFiscais.API/              # Camada de Apresenta√ß√£o
 ?   ??? Controllers/                          # V1 - Clean Architecture
 ?   ?   ??? NotasFiscaisController.cs
 ?   ?   ??? FaturasController.cs
@@ -389,8 +396,8 @@ Plantonize.NotasFiscais/
 ?   ??? appsettings.json
 ?   ??? Program.cs
 ?
-??? Plantonize.NotasFiscais.Application/      # Camada de AplicaÁ„o
-?   ??? Services/                             # LÛgica de negÛcio
+??? Plantonize.NotasFiscais.Application/      # Camada de Aplica√ß√£o
+?   ??? Services/                             # L√≥gica de neg√≥cio
 ?   ?   ??? NotaFiscalService.cs
 ?   ?   ??? FaturaService.cs
 ?   ?   ??? ImpostoResumoService.cs
@@ -398,7 +405,7 @@ Plantonize.NotasFiscais/
 ?   ??? DTOs/
 ?   ??? Extensions/
 ?
-??? Plantonize.NotasFiscais.Domain/           # Camada de DomÌnio
+??? Plantonize.NotasFiscais.Domain/           # Camada de Dom√≠nio
 ?   ??? Entities/
 ?   ?   ??? NotaFiscal.cs
 ?   ?   ??? Fatura.cs
@@ -426,7 +433,7 @@ Plantonize.NotasFiscais/
 ?   ??? InfrastructureLayerTests.cs
 ?   ??? ApiLayerTests.cs
 ?
-??? Plantonize.NotasFiscais.UnitTests/        # Testes Unit·rios
+??? Plantonize.NotasFiscais.UnitTests/        # Testes Unit√°rios
     ??? Features/                             # Testes Vertical Slice
     ?   ??? NotasFiscais/
     ?       ??? Create/
@@ -446,7 +453,7 @@ Plantonize.NotasFiscais/
 
 ### Backend
 - **.NET 8** - Framework principal
-- **C# 12.0** - Linguagem de programaÁ„o
+- **C# 12.0** - Linguagem de programa√ß√£o
 - **ASP.NET Core Web API** - API REST
 
 ### Banco de Dados
@@ -454,13 +461,13 @@ Plantonize.NotasFiscais/
 - **MongoDB.Driver 3.5.0** - Driver oficial
 
 ### Mensageria
-- **Azure Service Bus 7.20.1** - Mensageria assÌncrona
+- **Azure Service Bus 7.20.1** - Mensageria ass√≠ncrona
 
 ### Ferramentas e Bibliotecas
 - **MediatR 12.4.1** - CQRS e Mediator Pattern
-- **FluentValidation 11.10.0** - ValidaÁ„o de entrada
+- **FluentValidation 11.10.0** - Valida√ß√£o de entrada
 - **AutoMapper 12.0.1** - Mapeamento de objetos
-- **Swagger/OpenAPI** - DocumentaÁ„o da API
+- **Swagger/OpenAPI** - Documenta√ß√£o da API
 - **NetArchTest.Rules 1.3.2** - Testes de arquitetura
 - **xUnit 2.9.3** - Framework de testes
 - **FluentAssertions 8.8.0** - Assertions para testes
@@ -474,13 +481,13 @@ Plantonize.NotasFiscais/
 - **MongoDB 6.0+** (local ou Atlas)
 - **Azure Service Bus** (opcional, para mensageria)
 - **Visual Studio 2022** ou **VS Code** (recomendado)
-- **Docker** (opcional, para containerizaÁ„o)
+- **Docker** (opcional, para containeriza√ß√£o)
 
 ---
 
-## ?? InstalaÁ„o
+## ?? Instala√ß√£o
 
-### 1. Clone o repositÛrio
+### 1. Clone o reposit√≥rio
 
 ```bash
 git clone https://github.com/IvanNaka/Plantonize.NotasFiscais.git
@@ -495,20 +502,20 @@ dotnet restore
 
 ### 3. Configure o MongoDB
 
-OpÁ„o 1 - **MongoDB Local:**
+Op√ß√£o 1 - **MongoDB Local:**
 ```bash
 # Inicie o MongoDB
 mongod --dbpath /data/db
 ```
 
-OpÁ„o 2 - **MongoDB Atlas (Cloud):**
+Op√ß√£o 2 - **MongoDB Atlas (Cloud):**
 - Crie uma conta em [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
 - Crie um cluster gratuito
 - Obtenha a connection string
 
 ---
 
-## ?? ConfiguraÁ„o
+## ?? Configura√ß√£o
 
 ### 1. appsettings.json
 
@@ -535,7 +542,7 @@ Edite o arquivo `Plantonize.NotasFiscais.API/appsettings.json`:
 
 ---
 
-## ?? ExecuÁ„o
+## ?? Execu√ß√£o
 
 ### Modo Development
 
@@ -544,7 +551,7 @@ cd Plantonize.NotasFiscais.API
 dotnet run
 ```
 
-A aplicaÁ„o estar· disponÌvel em:
+A aplica√ß√£o estar√° dispon√≠vel em:
 - **HTTP**: http://localhost:5000
 - **HTTPS**: https://localhost:5001
 - **Swagger**: http://localhost:5000/swagger
@@ -581,16 +588,16 @@ dotnet test
 **Testes implementados:**
 
 1. **LayerDependencyTests** ? (6 testes)
-   - Validam dependÍncias entre camadas
+   - Validam depend√™ncias entre camadas
 
 2. **NamingConventionTests** ? (6 testes)
-   - Validam convenÁıes de nomenclatura
+   - Validam conven√ß√µes de nomenclatura
 
 3. **DomainLayerTests** ? (6 testes)
-   - Validam regras do domÌnio
+   - Validam regras do dom√≠nio
 
 4. **ApplicationLayerTests** ? (5 testes)
-   - Validam camada de aplicaÁ„o
+   - Validam camada de aplica√ß√£o
 
 5. **InfrastructureLayerTests** ? (6 testes)
    - Validam camada de infraestrutura
@@ -600,9 +607,9 @@ dotnet test
 
 **Total: 34 testes de arquitetura**
 
-### Testes Unit·rios
+### Testes Unit√°rios
 
-Os testes unit·rios cobrem todas as funcionalidades implementadas:
+Os testes unit√°rios cobrem todas as funcionalidades implementadas:
 
 ```bash
 cd Plantonize.NotasFiscais.UnitTests
@@ -623,7 +630,7 @@ dotnet test
 - **NotaFiscalServiceTests** ? (7 testes)
 - **NotaFiscalTests** (Domain) ? (7 testes)
 
-**Total: 45+ testes unit·rios**
+**Total: 45+ testes unit√°rios**
 
 ### Executar todos os testes
 
@@ -645,7 +652,7 @@ dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
 Base URL: `/api`
 
-| MÈtodo | Endpoint | DescriÁ„o |
+| M√©todo | Endpoint | Descri√ß√£o |
 |--------|----------|-----------|
 | GET | `/api/NotasFiscais` | Listar todas |
 | GET | `/api/NotasFiscais/{id}` | Buscar por ID |
@@ -657,7 +664,7 @@ Base URL: `/api`
 
 Base URL: `/api/v2`
 
-| MÈtodo | Endpoint | DescriÁ„o |
+| M√©todo | Endpoint | Descri√ß√£o |
 |--------|----------|-----------|
 | GET | `/api/v2/notas-fiscais` | Listar todas (CQRS) |
 | GET | `/api/v2/notas-fiscais/{id}` | Buscar por ID (CQRS) |
@@ -680,45 +687,45 @@ GET /health
 }
 ```
 
-**DocumentaÁ„o completa disponÌvel em**: `/swagger`
+**Documenta√ß√£o completa dispon√≠vel em**: `/swagger`
 
 ---
 
-## ?? Padrıes e Boas Pr·ticas
+## ?? Padr√µes e Boas Pr√°ticas
 
-### PrincÌpios SOLID
+### Princ√≠pios SOLID
 
-- ? **S** - Single Responsibility: Cada classe tem uma ˙nica responsabilidade
-- ? **O** - Open/Closed: Aberto para extens„o, fechado para modificaÁ„o
-- ? **L** - Liskov Substitution: Uso de interfaces e abstraÁıes
-- ? **I** - Interface Segregation: Interfaces especÌficas e coesas
-- ? **D** - Dependency Inversion: DependÍncia de abstraÁıes, n„o implementaÁıes
+- ? **S** - Single Responsibility: Cada classe tem uma √∫nica responsabilidade
+- ? **O** - Open/Closed: Aberto para extens√£o, fechado para modifica√ß√£o
+- ? **L** - Liskov Substitution: Uso de interfaces e abstra√ß√µes
+- ? **I** - Interface Segregation: Interfaces espec√≠ficas e coesas
+- ? **D** - Dependency Inversion: Depend√™ncia de abstra√ß√µes, n√£o implementa√ß√µes
 
 ### Design Patterns Utilizados
 
-- **Repository Pattern**: AbstraÁ„o do acesso a dados
-- **Dependency Injection**: Invers„o de controle
-- **Service Layer Pattern**: Camada de serviÁos de aplicaÁ„o
-- **DTO Pattern**: TransferÍncia de dados entre camadas
-- **Options Pattern**: ConfiguraÁ„o tipada
-- **CQRS Pattern**: SeparaÁ„o de comandos e queries (V2)
+- **Repository Pattern**: Abstra√ß√£o do acesso a dados
+- **Dependency Injection**: Invers√£o de controle
+- **Service Layer Pattern**: Camada de servi√ßos de aplica√ß√£o
+- **DTO Pattern**: Transfer√™ncia de dados entre camadas
+- **Options Pattern**: Configura√ß√£o tipada
+- **CQRS Pattern**: Separa√ß√£o de comandos e queries (V2)
 - **Mediator Pattern**: MediatR para desacoplamento (V2)
-- **Validator Pattern**: FluentValidation para validaÁ„o (V2)
+- **Validator Pattern**: FluentValidation para valida√ß√£o (V2)
 
-### ConvenÁıes de CÛdigo
+### Conven√ß√µes de C√≥digo
 
-- **Nomenclatura**: PascalCase para classes, camelCase para vari·veis
-- **Async/Await**: Todos os mÈtodos I/O s„o assÌncronos
+- **Nomenclatura**: PascalCase para classes, camelCase para vari√°veis
+- **Async/Await**: Todos os m√©todos I/O s√£o ass√≠ncronos
 - **Nullable Reference Types**: Habilitado para evitar null reference exceptions
 - **ImplicitUsings**: Habilitado para reduzir boilerplate
-- **Records**: Utilizados para Commands e Queries imut·veis
+- **Records**: Utilizados para Commands e Queries imut√°veis
 
-### SeguranÁa
+### Seguran√ßa
 
-- ? HTTPS habilitado em produÁ„o
-- ? CORS configurado (ajustar para produÁ„o)
-- ? ValidaÁ„o de modelos autom·tica
-- ? Connection strings em configuraÁ„o externa
+- ? HTTPS habilitado em produ√ß√£o
+- ? CORS configurado (ajustar para produ√ß√£o)
+- ? Valida√ß√£o de modelos autom√°tica
+- ? Connection strings em configura√ß√£o externa
 
 ---
 
@@ -726,7 +733,7 @@ GET /health
 
 Este projeto foi desenvolvido por:
 
-- **Ana Paula Magnabosco Milit„o**
+- **Ana Paula Magnabosco Milit√£o**
 - **Bruno dos Santos**
 - **Gabriela Vieira Ramos**
 - **Ivan Yudi Oda Nakatani** - [GitHub](https://github.com/IvanNaka)
@@ -734,29 +741,29 @@ Este projeto foi desenvolvido por:
 
 ---
 
-## ?? ContribuiÁ„o
+## ?? Contribui√ß√£o
 
-ContribuiÁıes s„o bem-vindas! Siga os passos:
+Contribui√ß√µes s√£o bem-vindas! Siga os passos:
 
 1. Fork o projeto
 2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanÁas (`git commit -m 'Add some AmazingFeature'`)
+3. Commit suas mudan√ßas (`git commit -m 'Add some AmazingFeature'`)
 4. Push para a branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
 
-### Regras de ContribuiÁ„o
+### Regras de Contribui√ß√£o
 
-- ? Siga as convenÁıes de cÛdigo existentes
+- ? Siga as conven√ß√µes de c√≥digo existentes
 - ? Adicione testes para novas funcionalidades
 - ? Mantenha os testes de arquitetura passando
-- ? Documente mudanÁas significativas
-- ? Use commits sem‚nticos (feat, fix, docs, refactor, test)
+- ? Documente mudan√ßas significativas
+- ? Use commits sem√¢nticos (feat, fix, docs, refactor, test)
 
 ---
 
-## ?? LicenÁa
+## ?? Licen√ßa
 
-Este projeto est· sob a licenÁa MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Este projeto est√° sob a licen√ßa MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
 ---
 
@@ -766,9 +773,9 @@ Para suporte, envie um email para support@plantonize.com ou abra uma issue no Gi
 
 ---
 
-## ?? Links ⁄teis
+## ?? Links √öteis
 
-- [DocumentaÁ„o .NET 8](https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-8)
+- [Documenta√ß√£o .NET 8](https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-8)
 - [MongoDB Driver for .NET](https://www.mongodb.com/docs/drivers/csharp/)
 - [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - [Vertical Slice Architecture](https://jimmybogard.com/vertical-slice-architecture/)
@@ -780,36 +787,36 @@ Para suporte, envie um email para support@plantonize.com ou abra uma issue no Gi
 
 ## ?? Status do Projeto
 
-? **Completo e Testado** - Vers„o 2.0.0
+? **Completo e Testado** - Vers√£o 2.0.0
 
-### CaracterÌsticas Implementadas
+### Caracter√≠sticas Implementadas
 
 - ? Clean Architecture (V1) - Completo
 - ? Vertical Slice Architecture (V2) - Completo
 - ? CRUD de Notas Fiscais (ambas arquiteturas)
 - ? CRUD de Faturas
 - ? CRUD de Impostos Resumo
-- ? CRUD de MunicÌpios AlÌquota
+- ? CRUD de Munic√≠pios Al√≠quota
 - ? Testes de Arquitetura (34 testes)
-- ? Testes Unit·rios (45+ testes)
-- ? DocumentaÁ„o Swagger completa
+- ? Testes Unit√°rios (45+ testes)
+- ? Documenta√ß√£o Swagger completa
 - ? Health Checks
-- ? ValidaÁ„o autom·tica (FluentValidation)
+- ? Valida√ß√£o autom√°tica (FluentValidation)
 - ? Logging estruturado
 
 ### Roadmap Futuro
 
-- [ ] Implementar autenticaÁ„o JWT
+- [ ] Implementar autentica√ß√£o JWT
 - [ ] Adicionar rate limiting
 - [ ] Implementar cache com Redis
 - [ ] Adicionar logs estruturados (Serilog)
-- [ ] Implementar health checks avanÁados
-- [ ] Adicionar mÈtricas e observabilidade
-- [ ] Testes de integraÁ„o
+- [ ] Implementar health checks avan√ßados
+- [ ] Adicionar m√©tricas e observabilidade
+- [ ] Testes de integra√ß√£o
 - [ ] Deploy automatizado (CI/CD)
 
 ---
 
 **Desenvolvido com ?? pela equipe Plantonize**
 
-**Projeto AcadÍmico - 2024/2025**
+**Projeto Acad√™mico - 2024/2025**
