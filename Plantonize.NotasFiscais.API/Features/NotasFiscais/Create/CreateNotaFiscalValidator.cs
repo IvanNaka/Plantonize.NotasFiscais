@@ -17,7 +17,7 @@ public class CreateNotaFiscalValidator : AbstractValidator<CreateNotaFiscalComma
             .GreaterThan(0).WithMessage("Valor total deve ser maior que zero");
 
         RuleFor(x => x.DataEmissao)
-            .LessThanOrEqualTo(DateTime.Now).WithMessage("Data de emissão não pode ser futura");
+            .NotEmpty().WithMessage("Data de emissão é obrigatória");
 
         RuleFor(x => x.MunicipioPrestacao)
             .MaximumLength(100).WithMessage("Município de prestação deve ter no máximo 100 caracteres")

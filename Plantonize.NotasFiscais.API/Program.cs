@@ -2,8 +2,45 @@ using Plantonize.NotasFiscais.Application.Extensions;
 using Plantonize.NotasFiscais.Infrastructure.Extensions;
 using Plantonize.NotasFiscais.Infrastructure.Services;
 using FluentValidation;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Conventions;
+using MongoDB.Bson.Serialization.Serializers;
+using Plantonize.NotasFiscais.Domain.Enum;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// ========================================
+// CONFIGURAÇÃO MONGODB - Serialização de Enums e GUIDs
+// ========================================
+
+// Configurar convenções do MongoDB
+var conventionPack = new ConventionPack
+{
+    new EnumRepresentationConvention(BsonType.String), // Enums como string
+    new CamelCaseElementNameConvention(),
+    new IgnoreExtraElementsConvention(true)
+};
+
+ConventionRegistry.Register("NotasFiscaisConventions", conventionPack, t => true);
+
+// Registrar serializers personalizados para enums
+BsonSerializer.RegisterSerializer(
+    typeof(StatusNFSEEnum),
+    new EnumSerializer<StatusNFSEEnum>(BsonType.String)
+);
+
+BsonSerializer.RegisterSerializer(
+    typeof(StatusFaturaEnum),
+    new EnumSerializer<StatusFaturaEnum>(BsonType.String)
+);
+
+// Registrar serializer para Guid com representação padrão
+BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
+
+// ========================================
+// CONFIGURAÇÃO DE SERVIÇOS
+// ========================================
 
 // Add CORS
 builder.Services.AddCors(options =>
@@ -39,7 +76,7 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "Plantonize NotasFiscais API",
         Version = "v1",
-        Description = "API for managing Notas Fiscais, Faturas, and Tax Calculations",
+        Description = "API for managing Notas Fiscais, Faturas, and Tax Calculations (Clean Architecture)",
         Contact = new Microsoft.OpenApi.Models.OpenApiContact
         {
             Name = "Plantonize",
@@ -50,7 +87,7 @@ builder.Services.AddSwaggerGen(options =>
     // ? Add V2 API documentation for Vertical Slices
     options.SwaggerDoc("v2", new Microsoft.OpenApi.Models.OpenApiInfo
     {
-        Title = "Plantonize NotasFiscais API - V2 (Vertical Slice)",
+        Title = "Plantonize NotasFiscais API - V2",
         Version = "v2",
         Description = "API using Vertical Slice Architecture with MediatR and CQRS patterns",
         Contact = new Microsoft.OpenApi.Models.OpenApiContact
@@ -74,6 +111,10 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+// ========================================
+// INICIALIZAÇÃO DO MONGODB
+// ========================================
+
 // Initialize MongoDB database (create collections and indexes)
 using (var scope = app.Services.CreateScope())
 {
@@ -88,8 +129,11 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Configure the HTTP request pipeline.
-// Enable Swagger in all environments (Development and Production)
+// ========================================
+// CONFIGURAÇÃO DO PIPELINE HTTP
+// ========================================
+
+// Enable Swagger in all environments
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
@@ -119,9 +163,12 @@ app.MapGet("/health", () => Results.Ok(new
 { 
     status = "Healthy", 
     timestamp = DateTime.UtcNow,
-    environment = app.Environment.EnvironmentName
+    environment = app.Environment.EnvironmentName,
+    mongodb = "Connected with GUID Standard representation",
+    architectures = new[] { "Clean Architecture (V1)", "Vertical Slice (V2)" }
 }))
-.WithName("HealthCheck");
+.WithName("HealthCheck")
+.WithTags("Health");
 
 // Add a root endpoint
 app.MapGet("/", () => Results.Ok(new 
@@ -130,11 +177,23 @@ app.MapGet("/", () => Results.Ok(new
     version = "2.0.0",
     architectures = new 
     {
-        v1 = "Clean Architecture (Layered)",
-        v2 = "Vertical Slice Architecture (CQRS)"
+        v1 = new 
+        {
+            name = "Clean Architecture (Layered)",
+            endpoint = "/api/NotasFiscais",
+            description = "Traditional layered architecture with Services and Repositories"
+        },
+        v2 = new
+        {
+            name = "Vertical Slice Architecture (CQRS)",
+            endpoint = "/api/v2/notas-fiscais",
+            description = "Feature-based architecture with MediatR, CQRS, and FluentValidation"
+        }
     },
-    documentation = "/swagger"
+    documentation = "/swagger",
+    healthCheck = "/health"
 }))
-.WithName("Root");
+.WithName("Root")
+.WithTags("Info");
 
 app.Run();

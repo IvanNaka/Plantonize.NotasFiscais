@@ -1,69 +1,65 @@
-using AutoMapper;
 using MongoDB.Driver;
 using Plantonize.NotasFiscais.Domain.Entities;
 using Plantonize.NotasFiscais.Domain.Interfaces;
-using Plantonize.NotasFiscais.Infrastructure.Configuration;
 
-namespace Plantonize.NotasFiscais.Infrastructure.Repositories
+namespace Plantonize.NotasFiscais.Infrastructure.Repositories;
+
+/// <summary>
+/// Repository for Fatura entity using MongoDB
+/// </summary>
+public class FaturaRepository : IFaturaRepository
 {
-    public class FaturaRepository : IFaturaRepository
+    private readonly IMongoCollection<Fatura> _collection;
+
+    public FaturaRepository(NotasFiscaisDBContext context)
     {
-        private readonly NotasFiscaisDBContext _context;
-        private readonly IMapper _mapper;
+        _collection = context.Faturas;
+    }
 
-        public FaturaRepository(NotasFiscaisDBContext context, IMapper mapper)
+    public async Task<Fatura?> GetByIdAsync(Guid id)
+    {
+        return await _collection
+            .Find(x => x.Id == id)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<IEnumerable<Fatura>> GetAllAsync()
+    {
+        return await _collection
+            .Find(_ => true)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Fatura>> GetByMedicoIdAsync(Guid medicoId)
+    {
+        return await _collection
+            .Find(x => x.MedicoId == medicoId)
+            .ToListAsync();
+    }
+
+    public async Task<Fatura> CreateAsync(Fatura fatura)
+    {
+        if (fatura.Id == Guid.Empty)
         {
-            _context = context;
-            _mapper = mapper;
+            fatura.Id = Guid.NewGuid();
         }
 
-        public async Task<Fatura?> GetByIdAsync(Guid id)
-        {
-            var config = await _context.Faturas
-                .Find(x => x.Id == id)
-                .FirstOrDefaultAsync();
-            
-            return config != null ? _mapper.Map<Fatura>(config) : null;
-        }
+        await _collection.InsertOneAsync(fatura);
+        return fatura;
+    }
 
-        public async Task<IEnumerable<Fatura>> GetAllAsync()
-        {
-            var configs = await _context.Faturas
-                .Find(_ => true)
-                .ToListAsync();
-            
-            return _mapper.Map<IEnumerable<Fatura>>(configs);
-        }
+    public async Task<Fatura> UpdateAsync(Fatura fatura)
+    {
+        await _collection.ReplaceOneAsync(
+            x => x.Id == fatura.Id,
+            fatura,
+            new ReplaceOptions { IsUpsert = false }
+        );
+        return fatura;
+    }
 
-        public async Task<IEnumerable<Fatura>> GetByMedicoIdAsync(Guid medicoId)
-        {
-            var configs = await _context.Faturas
-                .Find(x => x.MedicoId == medicoId)
-                .ToListAsync();
-            
-            return _mapper.Map<IEnumerable<Fatura>>(configs);
-        }
-
-        public async Task<Fatura> CreateAsync(Fatura fatura)
-        {
-            var config = _mapper.Map<FaturaConfiguration>(fatura);
-            await _context.Faturas.InsertOneAsync(config);
-            return _mapper.Map<Fatura>(config);
-        }
-
-        public async Task<Fatura> UpdateAsync(Fatura fatura)
-        {
-            var config = _mapper.Map<FaturaConfiguration>(fatura);
-            await _context.Faturas.ReplaceOneAsync(
-                x => x.Id == config.Id,
-                config
-            );
-            return fatura;
-        }
-
-        public async Task DeleteAsync(Guid id)
-        {
-            await _context.Faturas.DeleteOneAsync(x => x.Id == id);
-        }
+    public async Task DeleteAsync(Guid id)
+    {
+        await _collection.DeleteOneAsync(x => x.Id == id);
     }
 }

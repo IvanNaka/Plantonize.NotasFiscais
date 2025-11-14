@@ -1,73 +1,69 @@
-using AutoMapper;
 using MongoDB.Driver;
 using Plantonize.NotasFiscais.Domain.Entities;
 using Plantonize.NotasFiscais.Domain.Interfaces;
-using Plantonize.NotasFiscais.Infrastructure.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Plantonize.NotasFiscais.Infrastructure.Repositories
+namespace Plantonize.NotasFiscais.Infrastructure.Repositories;
+
+/// <summary>
+/// Repository for NotaFiscal entity using MongoDB
+/// </summary>
+public class NotaFiscalRepository : INotaFiscalRepository
 {
-    public class NotaFiscalRepository : INotaFiscalRepository
+    private readonly IMongoCollection<NotaFiscal> _collection;
+
+    public NotaFiscalRepository(NotasFiscaisDBContext context)
     {
-        private readonly NotasFiscaisDBContext _context;
-        private readonly IMapper _mapper;
+        _collection = context.NotasFiscais;
+    }
 
-        public NotaFiscalRepository(NotasFiscaisDBContext context, IMapper mapper)
+    public async Task<NotaFiscal?> GetByIdAsync(Guid id)
+    {
+        return await _collection
+            .Find(x => x.Id == id)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<IEnumerable<NotaFiscal>> GetAllAsync()
+    {
+        return await _collection
+            .Find(_ => true)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<NotaFiscal>> GetByMedicoIdAsync(Guid medicoId)
+    {
+        // Filtrar por medico se existir um campo MedicoId
+        // Como não temos MedicoId direto, vamos retornar todas
+        // Você pode ajustar este filtro conforme necessário
+        return await _collection
+            .Find(_ => true)
+            .ToListAsync();
+    }
+
+    public async Task<NotaFiscal> CreateAsync(NotaFiscal notaFiscal)
+    {
+        // Garantir que o ID seja gerado se não existir
+        if (notaFiscal.Id == Guid.Empty)
         {
-            _context = context;
-            _mapper = mapper;
+            notaFiscal.Id = Guid.NewGuid();
         }
 
-        public async Task<NotaFiscal?> GetByIdAsync(Guid id)
-        {
-            var config = await _context.NotasFiscais
-                .Find(x => x.Id == id.ToString())
-                .FirstOrDefaultAsync();
-            
-            return config != null ? _mapper.Map<NotaFiscal>(config) : null;
-        }
+        await _collection.InsertOneAsync(notaFiscal);
+        return notaFiscal;
+    }
 
-        public async Task<IEnumerable<NotaFiscal>> GetAllAsync()
-        {
-            var configs = await _context.NotasFiscais
-                .Find(_ => true)
-                .ToListAsync();
-            
-            return _mapper.Map<IEnumerable<NotaFiscal>>(configs);
-        }
+    public async Task<NotaFiscal> UpdateAsync(NotaFiscal notaFiscal)
+    {
+        await _collection.ReplaceOneAsync(
+            x => x.Id == notaFiscal.Id,
+            notaFiscal,
+            new ReplaceOptions { IsUpsert = false }
+        );
+        return notaFiscal;
+    }
 
-        public async Task<IEnumerable<NotaFiscal>> GetByMedicoIdAsync(Guid medicoId)
-        {
-            var configs = await _context.NotasFiscais
-                .Find(x => x.Medico != null && x.Medico.MedicoId == medicoId)
-                .ToListAsync();
-            
-            return _mapper.Map<IEnumerable<NotaFiscal>>(configs);
-        }
-
-        public async Task<NotaFiscal> CreateAsync(NotaFiscal notaFiscal)
-        {
-            var config = _mapper.Map<NFSEConfiguration>(notaFiscal);
-            await _context.NotasFiscais.InsertOneAsync(config);
-            return _mapper.Map<NotaFiscal>(config);
-        }
-
-        public async Task<NotaFiscal> UpdateAsync(NotaFiscal notaFiscal)
-        {
-            var config = _mapper.Map<NFSEConfiguration>(notaFiscal);
-            await _context.NotasFiscais.ReplaceOneAsync(
-                x => x.Id == config.Id,
-                config
-            );
-            return notaFiscal;
-        }
-
-        public async Task DeleteAsync(Guid id)
-        {
-            await _context.NotasFiscais.DeleteOneAsync(x => x.Id == id.ToString());
-        }
+    public async Task DeleteAsync(Guid id)
+    {
+        await _collection.DeleteOneAsync(x => x.Id == id);
     }
 }

@@ -30,6 +30,8 @@ public class GetNotaFiscalEndpoint : ControllerBase
     /// <returns>The Nota Fiscal if found</returns>
     /// <response code="200">Nota Fiscal found</response>
     /// <response code="404">Nota Fiscal not found</response>
+    /// <response code="400">Invalid request</response>
+    /// <response code="500">Internal server error</response>
     [HttpGet("{id:guid}", Name = "GetById")]
     [SwaggerOperation(
         Summary = "Get Nota Fiscal by ID",
@@ -39,17 +41,33 @@ public class GetNotaFiscalEndpoint : ControllerBase
     )]
     [ProducesResponseType(typeof(NotaFiscal), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetById(Guid id)
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<NotaFiscal>> GetById(Guid id)
     {
-        _logger.LogInformation("V2 API: Getting Nota Fiscal {Id} via Vertical Slice", id);
-        
-        var result = await _mediator.Send(new GetNotaFiscalQuery(id));
-        
-        if (result == null)
+        try
         {
-            return NotFound(new { message = $"Nota Fiscal with ID {id} not found" });
-        }
+            _logger.LogInformation("V2 API: Getting Nota Fiscal {Id} via Vertical Slice", id);
             
-        return Ok(result);
+            var notaFiscal = await _mediator.Send(new GetNotaFiscalQuery(id));
+            
+            if (notaFiscal == null)
+            {
+                _logger.LogWarning("V2 API: Nota Fiscal {Id} not found", id);
+                return NotFound($"Nota fiscal with ID {id} not found");
+            }
+            
+            return Ok(notaFiscal);
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogWarning(ex, "V2 API: Invalid argument when getting nota fiscal {Id}", id);
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "V2 API: Error getting nota fiscal {Id}", id);
+            return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data");
+        }
     }
 }

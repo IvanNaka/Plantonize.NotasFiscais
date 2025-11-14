@@ -1,25 +1,29 @@
 using MongoDB.Driver;
-using Plantonize.NotasFiscais.Infrastructure.Configuration;
+using Plantonize.NotasFiscais.Domain.Entities;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
-namespace Plantonize.NotasFiscais.Infrastructure.Services
+namespace Plantonize.NotasFiscais.Infrastructure.Services;
+
+/// <summary>
+/// Initializes MongoDB database with collections and indexes
+/// </summary>
+public class MongoDbInitializer
 {
-    public class MongoDbInitializer
+    private readonly NotasFiscaisDBContext _context;
+    private readonly ILogger<MongoDbInitializer> _logger;
+
+    public MongoDbInitializer(NotasFiscaisDBContext context, ILogger<MongoDbInitializer> logger)
     {
-        private readonly NotasFiscaisDBContext _context;
-        private readonly ILogger<MongoDbInitializer> _logger;
+        _context = context;
+        _logger = logger;
+    }
 
-        public MongoDbInitializer(NotasFiscaisDBContext context, ILogger<MongoDbInitializer> logger)
+    public async Task InitializeAsync()
+    {
+        _logger.LogInformation("Initializing MongoDB database...");
+
+        try
         {
-            _context = context;
-            _logger = logger;
-        }
-
-        public async Task InitializeAsync()
-        {
-            _logger.LogInformation("Initializing MongoDB database...");
-
             // Create indexes for NotasFiscais collection
             await CreateNotasFiscaisIndexesAsync();
 
@@ -32,122 +36,119 @@ namespace Plantonize.NotasFiscais.Infrastructure.Services
             // Create indexes for ImpostosResumo collection
             await CreateImpostosResumoIndexesAsync();
 
-            _logger.LogInformation("MongoDB database initialization completed.");
+            _logger.LogInformation("MongoDB database initialization completed successfully.");
         }
-
-        private async Task CreateNotasFiscaisIndexesAsync()
+        catch (Exception ex)
         {
-            var collection = _context.NotasFiscais;
-
-            // Index on numeroNota for fast lookups
-            var numeroNotaIndex = Builders<NFSEConfiguration>.IndexKeys
-                .Ascending(x => x.NumeroNota);
-            await collection.Indexes.CreateOneAsync(
-                new CreateIndexModel<NFSEConfiguration>(numeroNotaIndex, 
-                    new CreateIndexOptions { Name = "idx_numeroNota" }));
-
-            // Index on dataEmissao for date range queries
-            var dataEmissaoIndex = Builders<NFSEConfiguration>.IndexKeys
-                .Descending(x => x.DataEmissao);
-            await collection.Indexes.CreateOneAsync(
-                new CreateIndexModel<NFSEConfiguration>(dataEmissaoIndex, 
-                    new CreateIndexOptions { Name = "idx_dataEmissao" }));
-
-            // Compound index on medico.medicoId and dataEmissao for filtered queries
-            var medicoDataIndex = Builders<NFSEConfiguration>.IndexKeys
-                .Ascending("medico.medicoId")
-                .Descending(x => x.DataEmissao);
-            await collection.Indexes.CreateOneAsync(
-                new CreateIndexModel<NFSEConfiguration>(medicoDataIndex, 
-                    new CreateIndexOptions { Name = "idx_medico_dataEmissao" }));
-
-            // Index on status for filtering
-            var statusIndex = Builders<NFSEConfiguration>.IndexKeys
-                .Ascending(x => x.Status);
-            await collection.Indexes.CreateOneAsync(
-                new CreateIndexModel<NFSEConfiguration>(statusIndex, 
-                    new CreateIndexOptions { Name = "idx_status" }));
-
-            _logger.LogInformation("NotasFiscais indexes created successfully.");
+            _logger.LogError(ex, "Error during MongoDB initialization");
+            throw;
         }
+    }
 
-        private async Task CreateFaturasIndexesAsync()
-        {
-            var collection = _context.Faturas;
+    private async Task CreateNotasFiscaisIndexesAsync()
+    {
+        var collection = _context.NotasFiscais;
 
-            // Index on numeroFatura
-            var numeroFaturaIndex = Builders<FaturaConfiguration>.IndexKeys
-                .Ascending(x => x.NumeroFatura);
-            await collection.Indexes.CreateOneAsync(
-                new CreateIndexModel<FaturaConfiguration>(numeroFaturaIndex, 
-                    new CreateIndexOptions { Name = "idx_numeroFatura" }));
+        // Index on NumeroNota for fast lookups
+        var numeroNotaIndex = Builders<NotaFiscal>.IndexKeys
+            .Ascending(x => x.NumeroNota);
+        await collection.Indexes.CreateOneAsync(
+            new CreateIndexModel<NotaFiscal>(numeroNotaIndex, 
+                new CreateIndexOptions { Name = "idx_numeroNota" }));
 
-            // Index on medicoId
-            var medicoIdIndex = Builders<FaturaConfiguration>.IndexKeys
-                .Ascending(x => x.MedicoId);
-            await collection.Indexes.CreateOneAsync(
-                new CreateIndexModel<FaturaConfiguration>(medicoIdIndex, 
-                    new CreateIndexOptions { Name = "idx_medicoId" }));
+        // Index on DataEmissao for date range queries
+        var dataEmissaoIndex = Builders<NotaFiscal>.IndexKeys
+            .Descending(x => x.DataEmissao);
+        await collection.Indexes.CreateOneAsync(
+            new CreateIndexModel<NotaFiscal>(dataEmissaoIndex, 
+                new CreateIndexOptions { Name = "idx_dataEmissao" }));
 
-            // Index on status
-            var statusIndex = Builders<FaturaConfiguration>.IndexKeys
-                .Ascending(x => x.Status);
-            await collection.Indexes.CreateOneAsync(
-                new CreateIndexModel<FaturaConfiguration>(statusIndex, 
-                    new CreateIndexOptions { Name = "idx_fatura_status" }));
+        // Index on Status for filtering
+        var statusIndex = Builders<NotaFiscal>.IndexKeys
+            .Ascending(x => x.Status);
+        await collection.Indexes.CreateOneAsync(
+            new CreateIndexModel<NotaFiscal>(statusIndex, 
+                new CreateIndexOptions { Name = "idx_status" }));
 
-            // Index on dataVencimento
-            var dataVencimentoIndex = Builders<FaturaConfiguration>.IndexKeys
-                .Ascending(x => x.DataVencimento);
-            await collection.Indexes.CreateOneAsync(
-                new CreateIndexModel<FaturaConfiguration>(dataVencimentoIndex, 
-                    new CreateIndexOptions { Name = "idx_dataVencimento" }));
+        _logger.LogInformation("NotasFiscais indexes created successfully.");
+    }
 
-            _logger.LogInformation("Faturas indexes created successfully.");
-        }
+    private async Task CreateFaturasIndexesAsync()
+    {
+        var collection = _context.Faturas;
 
-        private async Task CreateMunicipiosAliquotaIndexesAsync()
-        {
-            var collection = _context.MunicipiosAliquota;
+        // Index on NumeroFatura
+        var numeroFaturaIndex = Builders<Fatura>.IndexKeys
+            .Ascending(x => x.NumeroFatura);
+        await collection.Indexes.CreateOneAsync(
+            new CreateIndexModel<Fatura>(numeroFaturaIndex, 
+                new CreateIndexOptions { Name = "idx_numeroFatura" }));
 
-            // Unique index on codigoMunicipio
-            var codigoMunicipioIndex = Builders<MunicipioAliquotaConfiguration>.IndexKeys
-                .Ascending(x => x.CodigoMunicipio);
-            await collection.Indexes.CreateOneAsync(
-                new CreateIndexModel<MunicipioAliquotaConfiguration>(codigoMunicipioIndex, 
-                    new CreateIndexOptions { Name = "idx_codigoMunicipio", Unique = true }));
+        // Index on MedicoId
+        var medicoIdIndex = Builders<Fatura>.IndexKeys
+            .Ascending(x => x.MedicoId);
+        await collection.Indexes.CreateOneAsync(
+            new CreateIndexModel<Fatura>(medicoIdIndex, 
+                new CreateIndexOptions { Name = "idx_medicoId" }));
 
-            // Index on nomeMunicipio for search
-            var nomeMunicipioIndex = Builders<MunicipioAliquotaConfiguration>.IndexKeys
-                .Ascending(x => x.NomeMunicipio);
-            await collection.Indexes.CreateOneAsync(
-                new CreateIndexModel<MunicipioAliquotaConfiguration>(nomeMunicipioIndex, 
-                    new CreateIndexOptions { Name = "idx_nomeMunicipio" }));
+        // Index on Status
+        var statusIndex = Builders<Fatura>.IndexKeys
+            .Ascending(x => x.Status);
+        await collection.Indexes.CreateOneAsync(
+            new CreateIndexModel<Fatura>(statusIndex, 
+                new CreateIndexOptions { Name = "idx_fatura_status" }));
 
-            _logger.LogInformation("MunicipiosAliquota indexes created successfully.");
-        }
+        // Index on DataVencimento
+        var dataVencimentoIndex = Builders<Fatura>.IndexKeys
+            .Ascending(x => x.DataVencimento);
+        await collection.Indexes.CreateOneAsync(
+            new CreateIndexModel<Fatura>(dataVencimentoIndex, 
+                new CreateIndexOptions { Name = "idx_dataVencimento" }));
 
-        private async Task CreateImpostosResumoIndexesAsync()
-        {
-            var collection = _context.ImpostosResumo;
+        _logger.LogInformation("Faturas indexes created successfully.");
+    }
 
-            // Compound unique index on medicoId, mes, ano
-            var medicoMesAnoIndex = Builders<ImpostoResumoConfiguration>.IndexKeys
-                .Ascending(x => x.MedicoId)
-                .Ascending(x => x.Ano)
-                .Ascending(x => x.Mes);
-            await collection.Indexes.CreateOneAsync(
-                new CreateIndexModel<ImpostoResumoConfiguration>(medicoMesAnoIndex, 
-                    new CreateIndexOptions { Name = "idx_medico_ano_mes", Unique = true }));
+    private async Task CreateMunicipiosAliquotaIndexesAsync()
+    {
+        var collection = _context.MunicipiosAliquota;
 
-            // Index on medicoId for queries
-            var medicoIdIndex = Builders<ImpostoResumoConfiguration>.IndexKeys
-                .Ascending(x => x.MedicoId);
-            await collection.Indexes.CreateOneAsync(
-                new CreateIndexModel<ImpostoResumoConfiguration>(medicoIdIndex, 
-                    new CreateIndexOptions { Name = "idx_impostoResumo_medicoId" }));
+        // Unique index on CodigoMunicipio
+        var codigoMunicipioIndex = Builders<MunicipioAliquota>.IndexKeys
+            .Ascending(x => x.CodigoMunicipio);
+        await collection.Indexes.CreateOneAsync(
+            new CreateIndexModel<MunicipioAliquota>(codigoMunicipioIndex, 
+                new CreateIndexOptions { Name = "idx_codigoMunicipio", Unique = true }));
 
-            _logger.LogInformation("ImpostosResumo indexes created successfully.");
-        }
+        // Index on NomeMunicipio for search
+        var nomeMunicipioIndex = Builders<MunicipioAliquota>.IndexKeys
+            .Ascending(x => x.NomeMunicipio);
+        await collection.Indexes.CreateOneAsync(
+            new CreateIndexModel<MunicipioAliquota>(nomeMunicipioIndex, 
+                new CreateIndexOptions { Name = "idx_nomeMunicipio" }));
+
+        _logger.LogInformation("MunicipiosAliquota indexes created successfully.");
+    }
+
+    private async Task CreateImpostosResumoIndexesAsync()
+    {
+        var collection = _context.ImpostosResumo;
+
+        // Compound unique index on MedicoId, Mes, Ano
+        var medicoMesAnoIndex = Builders<ImpostoResumo>.IndexKeys
+            .Ascending(x => x.MedicoId)
+            .Ascending(x => x.Ano)
+            .Ascending(x => x.Mes);
+        await collection.Indexes.CreateOneAsync(
+            new CreateIndexModel<ImpostoResumo>(medicoMesAnoIndex, 
+                new CreateIndexOptions { Name = "idx_medico_ano_mes", Unique = true }));
+
+        // Index on MedicoId for queries
+        var medicoIdIndex = Builders<ImpostoResumo>.IndexKeys
+            .Ascending(x => x.MedicoId);
+        await collection.Indexes.CreateOneAsync(
+            new CreateIndexModel<ImpostoResumo>(medicoIdIndex, 
+                new CreateIndexOptions { Name = "idx_impostoResumo_medicoId" }));
+
+        _logger.LogInformation("ImpostosResumo indexes created successfully.");
     }
 }

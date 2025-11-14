@@ -1,81 +1,72 @@
-using AutoMapper;
 using MongoDB.Driver;
 using Plantonize.NotasFiscais.Domain.Entities;
 using Plantonize.NotasFiscais.Domain.Interfaces;
-using Plantonize.NotasFiscais.Infrastructure.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Plantonize.NotasFiscais.Infrastructure.Repositories
+namespace Plantonize.NotasFiscais.Infrastructure.Repositories;
+
+/// <summary>
+/// Repository for ImpostoResumo entity using MongoDB
+/// </summary>
+public class ImpostoResumoRepository : IImpostoResumoRepository
 {
-    public class ImpostoResumoRepository : IImpostoResumoRepository
+    private readonly IMongoCollection<ImpostoResumo> _collection;
+
+    public ImpostoResumoRepository(NotasFiscaisDBContext context)
     {
-        private readonly NotasFiscaisDBContext _context;
-        private readonly IMapper _mapper;
+        _collection = context.ImpostosResumo;
+    }
 
-        public ImpostoResumoRepository(NotasFiscaisDBContext context, IMapper mapper)
+    public async Task<ImpostoResumo?> GetByIdAsync(Guid id)
+    {
+        return await _collection
+            .Find(x => x.Id == id)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<IEnumerable<ImpostoResumo>> GetAllAsync()
+    {
+        return await _collection
+            .Find(_ => true)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<ImpostoResumo>> GetByMedicoIdAsync(Guid medicoId)
+    {
+        return await _collection
+            .Find(x => x.MedicoId == medicoId)
+            .ToListAsync();
+    }
+
+    public async Task<ImpostoResumo?> GetByMedicoMesAnoAsync(Guid medicoId, int mes, int ano)
+    {
+        return await _collection
+            .Find(x => x.MedicoId == medicoId && x.Mes == mes && x.Ano == ano)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<ImpostoResumo> CreateAsync(ImpostoResumo impostoResumo)
+    {
+        if (impostoResumo.Id == Guid.Empty)
         {
-            _context = context;
-            _mapper = mapper;
+            impostoResumo.Id = Guid.NewGuid();
         }
 
-        public async Task<ImpostoResumo?> GetByIdAsync(Guid id)
-        {
-            var config = await _context.ImpostosResumo
-                .Find(x => x.Id == id.ToString())
-                .FirstOrDefaultAsync();
-            
-            return config != null ? _mapper.Map<ImpostoResumo>(config) : null;
-        }
+        await _collection.InsertOneAsync(impostoResumo);
+        return impostoResumo;
+    }
 
-        public async Task<IEnumerable<ImpostoResumo>> GetAllAsync()
-        {
-            var configs = await _context.ImpostosResumo
-                .Find(_ => true)
-                .ToListAsync();
-            
-            return _mapper.Map<IEnumerable<ImpostoResumo>>(configs);
-        }
+    public async Task<ImpostoResumo> UpdateAsync(ImpostoResumo impostoResumo)
+    {
+        await _collection.ReplaceOneAsync(
+            x => x.Id == impostoResumo.Id,
+            impostoResumo,
+            new ReplaceOptions { IsUpsert = false }
+        );
+        return impostoResumo;
+    }
 
-        public async Task<IEnumerable<ImpostoResumo>> GetByMedicoIdAsync(Guid medicoId)
-        {
-            var configs = await _context.ImpostosResumo
-                .Find(x => x.MedicoId == medicoId.ToString())
-                .ToListAsync();
-            
-            return _mapper.Map<IEnumerable<ImpostoResumo>>(configs);
-        }
-
-        public async Task<ImpostoResumo?> GetByMedicoMesAnoAsync(Guid medicoId, int mes, int ano)
-        {
-            var config = await _context.ImpostosResumo
-                .Find(x => x.MedicoId == medicoId.ToString() && x.Mes == mes && x.Ano == ano)
-                .FirstOrDefaultAsync();
-            
-            return config != null ? _mapper.Map<ImpostoResumo>(config) : null;
-        }
-
-        public async Task<ImpostoResumo> CreateAsync(ImpostoResumo impostoResumo)
-        {
-            var config = _mapper.Map<ImpostoResumoConfiguration>(impostoResumo);
-            await _context.ImpostosResumo.InsertOneAsync(config);
-            return _mapper.Map<ImpostoResumo>(config);
-        }
-
-        public async Task<ImpostoResumo> UpdateAsync(ImpostoResumo impostoResumo)
-        {
-            var config = _mapper.Map<ImpostoResumoConfiguration>(impostoResumo);
-            await _context.ImpostosResumo.ReplaceOneAsync(
-                x => x.Id == config.Id,
-                config
-            );
-            return impostoResumo;
-        }
-
-        public async Task DeleteAsync(Guid id)
-        {
-            await _context.ImpostosResumo.DeleteOneAsync(x => x.Id == id.ToString());
-        }
+    public async Task DeleteAsync(Guid id)
+    {
+        await _collection.DeleteOneAsync(x => x.Id == id);
     }
 }

@@ -8,6 +8,12 @@ namespace Plantonize.NotasFiscais.Domain.Entities
         public int Quantidade { get; set; }
         public decimal ValorUnitario { get; set; }
         public decimal AliquotaIss { get; set; }
-        public decimal ValorTotal => Quantidade * ValorUnitario;
+        
+        private decimal? _valorTotal;
+        public decimal ValorTotal 
+        { 
+            get => _valorTotal ?? (Quantidade * ValorUnitario);
+            set => _valorTotal = value;
+        }
     }
 }

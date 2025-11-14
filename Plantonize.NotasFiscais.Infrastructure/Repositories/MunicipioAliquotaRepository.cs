@@ -1,72 +1,65 @@
-using AutoMapper;
 using MongoDB.Driver;
 using Plantonize.NotasFiscais.Domain.Entities;
 using Plantonize.NotasFiscais.Domain.Interfaces;
-using Plantonize.NotasFiscais.Infrastructure.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Plantonize.NotasFiscais.Infrastructure.Repositories
+namespace Plantonize.NotasFiscais.Infrastructure.Repositories;
+
+/// <summary>
+/// Repository for MunicipioAliquota entity using MongoDB
+/// </summary>
+public class MunicipioAliquotaRepository : IMunicipioAliquotaRepository
 {
-    public class MunicipioAliquotaRepository : IMunicipioAliquotaRepository
+    private readonly IMongoCollection<MunicipioAliquota> _collection;
+
+    public MunicipioAliquotaRepository(NotasFiscaisDBContext context)
     {
-        private readonly NotasFiscaisDBContext _context;
-        private readonly IMapper _mapper;
+        _collection = context.MunicipiosAliquota;
+    }
 
-        public MunicipioAliquotaRepository(NotasFiscaisDBContext context, IMapper mapper)
+    public async Task<MunicipioAliquota?> GetByIdAsync(Guid id)
+    {
+        return await _collection
+            .Find(x => x.Id == id)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<IEnumerable<MunicipioAliquota>> GetAllAsync()
+    {
+        return await _collection
+            .Find(_ => true)
+            .ToListAsync();
+    }
+
+    public async Task<MunicipioAliquota?> GetByCodigoMunicipioAsync(string codigoMunicipio)
+    {
+        return await _collection
+            .Find(x => x.CodigoMunicipio == codigoMunicipio)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<MunicipioAliquota> CreateAsync(MunicipioAliquota municipioAliquota)
+    {
+        if (municipioAliquota.Id == Guid.Empty)
         {
-            _context = context;
-            _mapper = mapper;
+            municipioAliquota.Id = Guid.NewGuid();
         }
 
-        public async Task<MunicipioAliquota?> GetByIdAsync(Guid id)
-        {
-            var config = await _context.MunicipiosAliquota
-                .Find(x => x.Id == id)
-                .FirstOrDefaultAsync();
-            
-            return config != null ? _mapper.Map<MunicipioAliquota>(config) : null;
-        }
+        await _collection.InsertOneAsync(municipioAliquota);
+        return municipioAliquota;
+    }
 
-        public async Task<IEnumerable<MunicipioAliquota>> GetAllAsync()
-        {
-            var configs = await _context.MunicipiosAliquota
-                .Find(_ => true)
-                .ToListAsync();
-            
-            return _mapper.Map<IEnumerable<MunicipioAliquota>>(configs);
-        }
+    public async Task<MunicipioAliquota> UpdateAsync(MunicipioAliquota municipioAliquota)
+    {
+        await _collection.ReplaceOneAsync(
+            x => x.Id == municipioAliquota.Id,
+            municipioAliquota,
+            new ReplaceOptions { IsUpsert = false }
+        );
+        return municipioAliquota;
+    }
 
-        public async Task<MunicipioAliquota?> GetByCodigoMunicipioAsync(string codigoMunicipio)
-        {
-            var config = await _context.MunicipiosAliquota
-                .Find(x => x.CodigoMunicipio == codigoMunicipio)
-                .FirstOrDefaultAsync();
-            
-            return config != null ? _mapper.Map<MunicipioAliquota>(config) : null;
-        }
-
-        public async Task<MunicipioAliquota> CreateAsync(MunicipioAliquota municipioAliquota)
-        {
-            var config = _mapper.Map<MunicipioAliquotaConfiguration>(municipioAliquota);
-            await _context.MunicipiosAliquota.InsertOneAsync(config);
-            return _mapper.Map<MunicipioAliquota>(config);
-        }
-
-        public async Task<MunicipioAliquota> UpdateAsync(MunicipioAliquota municipioAliquota)
-        {
-            var config = _mapper.Map<MunicipioAliquotaConfiguration>(municipioAliquota);
-            await _context.MunicipiosAliquota.ReplaceOneAsync(
-                x => x.Id == config.Id,
-                config
-            );
-            return municipioAliquota;
-        }
-
-        public async Task DeleteAsync(Guid id)
-        {
-            await _context.MunicipiosAliquota.DeleteOneAsync(x => x.Id == id);
-        }
+    public async Task DeleteAsync(Guid id)
+    {
+        await _collection.DeleteOneAsync(x => x.Id == id);
     }
 }

@@ -36,12 +36,21 @@ public class ListNotasFiscaisEndpoint : ControllerBase
         Tags = new[] { "NotasFiscais V2 (Vertical Slice)" }
     )]
     [ProducesResponseType(typeof(IEnumerable<NotaFiscal>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> List()
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IEnumerable<NotaFiscal>>> List()
     {
-        _logger.LogInformation("V2 API: Listing all Notas Fiscais via Vertical Slice");
-        
-        var result = await _mediator.Send(new ListNotasFiscaisQuery());
-        
-        return Ok(result);
+        try
+        {
+            _logger.LogInformation("V2 API: Listing all Notas Fiscais via Vertical Slice");
+            
+            var notasFiscais = await _mediator.Send(new ListNotasFiscaisQuery());
+            
+            return Ok(notasFiscais);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "V2 API: Error getting all notas fiscais");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data");
+        }
     }
 }
